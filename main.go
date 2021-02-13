@@ -1,13 +1,23 @@
 package main
 
 import (
+	"fmt"
+	"github.com/ArcaneDiver/your-tray/config"
 	"github.com/ArcaneDiver/your-tray/log"
 	"github.com/getlantern/systray"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	log.Init()
-	systray.Run(onStart, onExit)
+
+	configs, err := config.Parse("config.yaml")
+	if err != nil {
+		log.Log.Error(err)
+		logrus.Exit(1)
+	}
+
+	fmt.Print(configs)
 }
 
 func onStart() {
