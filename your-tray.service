@@ -1,0 +1,10 @@
+[Unit]
+Description=Your trace
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=/home/michele/go/src/github.com/ArcaneDiver/your-tray/dist/main
+
+[Install]
+WantedBy=multi-user.target

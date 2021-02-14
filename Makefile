@@ -1,6 +1,6 @@
 
 build:
-	go build -o dist/main main.go
+	go build -o dist/main
 
 run:
-	go run main.go
+	go run github.com/ArcaneDiver/your-tray
