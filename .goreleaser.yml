@@ -1,0 +1,25 @@
+builds:
+  - goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - -s -w -X github.com/ArcaneDiver/your-tray.version={{ .Version }}
+archives:
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}-v{{ .Version }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+
+nfpms:
+  - file_name_template: "{{ .ProjectName }}-v{{ .Version }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    formats:
+      - deb
+      - rpm
+    dependencies:
+      - build-essential
+      - libgtk-3-dev
+      - libappindicator3-dev
+      - gir1.2-appindicator3-0.1
+    empty_folders:
+      - /etc/your-tray
+checksum:
+  name_template: "{{ .ProjectName }}-v{{ .Version }}-checksums.txt"
