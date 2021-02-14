@@ -27,12 +27,12 @@ sudo nano /etc/systemd/user/your-tray.service
 Use this configuration:
 ```
 [Unit]
-Description=Your trace
+Description=Your tray
 After=default.target
 
 [Service]
 Type=simple
-ExecStart=/home/michele/go/src/github.com/ArcaneDiver/your-tray/dist/main
+ExecStart=<path to the bin>
 
 [Install]
 WantedBy=multi-user.target
