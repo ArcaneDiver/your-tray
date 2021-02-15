@@ -38,11 +38,11 @@ WantedBy=multi-user.target
 
 ```
 You can start the service with:
-```bash
+```
 sudo systemctl --user start your-tray.service
 ```
 and keep it running between reboots:
-```bash
+```
 sudo systemctl --user enable your-tray.service
 ```
 
