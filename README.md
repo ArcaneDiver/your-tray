@@ -57,18 +57,18 @@ sudo systemctl --user enable your-tray.service
 #### YAML Config
 ```yaml
 tray:
-  name: Optional name
-  tooltip: Optional tooltip
+  name: My tray # Optional
+  tooltip: My wonderfull tray # Optional
   items:
     - text: "Ip: {{ .output }}" # .output is the output of the command
-      command: ifconfig lo | awk '/inet / {print $2}'
+      command: ifconfig <my vpn interface name> | awk '/inet / {print $2}'
       type: data
     - text: Start
-      command: sudo systemctl start area51-vpn.service
+      command: sudo systemctl start my-vpn.service
       tooltip: Start the service
       type: command
     - text: Stop
-      command: sudo systemctl stop area51-vpn.service
+      command: sudo systemctl stop my-vpn.service
       tooltip: Stop the service
       type: command
   icon: /etc/your-tray/area-51.png # Icon path of the tray
