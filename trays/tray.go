@@ -37,9 +37,11 @@ func (t *Tray) run(sync chan bool) func() {
 				item := item
 				go func() {
 					for {
-						<-ch
-						if _, err := item.ExecCommand(); err != nil {
-							log.Log.WithField("item", item.Name).Error(errors.Wrap(err, "Tray.run"))
+						select {
+						case <-ch:
+							if _, err := item.ExecCommand(); err != nil {
+								log.Log.WithField("item", item.Name).Error(errors.Wrap(err, "Tray.run"))
+							}
 						}
 					}
 				}()
