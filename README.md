@@ -1,6 +1,13 @@
 # Your Tray (WIP)
 Add your own app indicator by just setting a yaml file
 
+## Install
+```bash
+wget https://github.com/ArcaneDiver/your-tray/releases/download/1.0.0/your-tray-v1.0.0-linux-amd64.tar.gz -O your-tray.tar.gz
+tar -zxvf your-tray.tar.gz
+sudo mv your-tray /usr/local/bin/your-tray
+```
+
 ## Dependencies
 
 #### Build essential
