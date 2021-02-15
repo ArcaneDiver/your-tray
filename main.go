@@ -8,9 +8,11 @@ import (
 )
 
 func main() {
-	log.Init()
+	configPath 	:= flag.String("config", "/etc/your-tray/config.yaml", "Path to the configuration")
+	logLevel 	:= flag.String("level", "debug", "Log levels: error, warn, info, debug")
+	flag.Parse()
 
-	configPath := flag.String("config", "/etc/your-tray/config.yaml", "Path to the configuration")
+	log.Init(*logLevel)
 
 	configs, err := trays.Parse(*configPath)
 	if err != nil {

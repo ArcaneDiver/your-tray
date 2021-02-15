@@ -1,12 +1,14 @@
 package trays
 
 import (
+	"github.com/ArcaneDiver/your-tray/log"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 )
 
 type Config struct {
-	Tray Tray `yaml:"tray,flow"`
+	Tray 		Tray `yaml:"tray,flow"`
+	UpdateRate	int  `yaml:"updateRate"`
 }
 
 func Parse(path string) (*Config, error) {
@@ -21,5 +23,6 @@ func Parse(path string) (*Config, error) {
 		return nil, err
 	}
 
+	log.Log.Debug(config.UpdateRate)
 	return &config, nil
 }

@@ -5,105 +5,57 @@ import (
 	"github.com/getlantern/systray"
 	"github.com/pkg/errors"
 	"io/ioutil"
-	"os/exec"
-	"strings"
 )
 
 type Tray struct {
-	Name	string `yaml:"name"`
+	Name	string `yaml:"name,omitempty"`
 	Icon	string `yaml:"icon"`
-	Tooltip	string `yaml:"tooltip"`
+	Tooltip	string `yaml:"tooltip,omitempty"`
 	Items	[]Item `yaml:"items,flow"`
 }
 
-func (t *Tray) Init() {
-	systray.Run(t.run, t.exit)
+func (t *Tray) Init(sync chan bool) {
+	go systray.Run(t.run(sync), t.exit)
 }
 
-func (t *Tray) run() {
-	icon, err := t.readIcon()
-	if err != nil {
-		log.Log.Error(errors.Wrap(err, "Tray.run"))
-		log.Log.Exit(1)
-	}
+func (t *Tray) run(sync chan bool) func() {
+	return func() {
+		icon, err := t.readIcon()
+		if err != nil {
+			log.Log.Error(errors.Wrap(err, "Tray.run"))
+			log.Log.Exit(1)
+		}
 
-	systray.SetTitle(t.Name)
-	systray.SetIcon(icon)
-	systray.SetTooltip(t.Tooltip)
+		systray.SetTitle(t.Name)
+		systray.SetIcon(icon)
+		systray.SetTooltip(t.Tooltip)
 
-	for _, item := range t.Items {
-		ch := item.Register()
+		for idx, item := range t.Items {
+			ch := t.Items[idx].Register()
 
-		item := item
-		go func() {
-			for {
-				<-ch
-				if err := t.execCommand(item.Command); err != nil {
-					log.Log.WithField("item", item.Name).Error(errors.Wrap(err, "Tray.run"))
-				}
+			if !item.IsDynamic() {
+				item := item
+				go func() {
+					for {
+						<-ch
+						if _, err := item.ExecCommand(); err != nil {
+							log.Log.WithField("item", item.Name).Error(errors.Wrap(err, "Tray.run"))
+						}
+					}
+				}()
 			}
-		}()
+
+		}
+		sync <- true
 	}
+
 }
 
 func (t *Tray) exit()  {
 
 }
 
-func (t *Tray) execCommand(command string) error {
-	args := strings.Split(command, " ")
-	cmd := exec.Command(args[0], args[1:]...)
 
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return errors.Wrap(err, "Tray.execCommand")
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		return errors.Wrap(err, "Tray.execCommand")
-	}
-
-	if err := cmd.Start(); err != nil {
-		return errors.Wrap(err, "Tray.execCommand")
-	}
-
-	dataOut, err := ioutil.ReadAll(stdout)
-	if err != nil {
-		return errors.Wrap(err, "Tray.execCommand")
-	}
-
-	dataErr, err := ioutil.ReadAll(stderr)
-	if err != nil {
-		return errors.Wrap(err, "Tray.execCommand")
-	}
-
-	if err := cmd.Wait(); err != nil {
-		logEntry := log.Log.WithFields(map[string]interface{}{
-			"command": command,
-			"type":    "stderr",
-		})
-		if len(dataErr) > 0 {
-			logEntry.Error(string(dataErr))
-		} else {
-			logEntry.Error()
-		}
-
-		return errors.Wrap(err, "Tray.execCommand")
-	}
-
-	logEntry := log.Log.WithFields(map[string]interface{}{
-		"command": command,
-		"type":    "stdout",
-	})
-	if len(dataOut) > 0 {
-		logEntry.Info(string(dataOut))
-	} else {
-		logEntry.Info()
-	}
-
-	return nil
-}
 
 func (t *Tray) readIcon() ([]byte, error)  {
 	data, err := ioutil.ReadFile(t.Icon)
