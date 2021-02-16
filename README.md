@@ -78,6 +78,6 @@ tray:
       command: sudo systemctl stop my-vpn.service
       tooltip: Stop the service
       type: command
-  icon: /etc/your-tray/area-51.png # Icon path of the tray
+  icon: /etc/your-tray/my-icon.png # Icon path of the tray
 updateRate: 1 # Update rate of type data items
 ```
