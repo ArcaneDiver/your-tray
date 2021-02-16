@@ -23,6 +23,11 @@ func Parse(path string) (*Config, error) {
 		return nil, err
 	}
 
-	log.Log.Debug(config.UpdateRate)
+	if config.UpdateRate <= 0 {
+		log.Log.Warn("updateRate cannot be lower than 1, setting to 1")
+		config.UpdateRate = 1
+	}
+
+	log.Log.WithField("config", &config).Debug("parsed config")
 	return &config, nil
 }

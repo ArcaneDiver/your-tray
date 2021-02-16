@@ -9,7 +9,7 @@ import (
 
 func main() {
 	configPath 	:= flag.String("config", "/etc/your-tray/config.yaml", "Path to the configuration")
-	logLevel 	:= flag.String("level", "debug", "Log levels: error, warn, info, debug")
+	logLevel 	:= flag.String("level", "info", "Log levels: error, warn, info, debug")
 	flag.Parse()
 
 	log.Init(*logLevel)

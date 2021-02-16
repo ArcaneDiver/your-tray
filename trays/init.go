@@ -32,7 +32,7 @@ func Init(config *Config) {
 			}
 		}
 
-		time.Sleep(time.Second * 3)
+		time.Sleep(time.Second * time.Duration(config.UpdateRate))
 	}
 
 }
